@@ -1,2 +1,8 @@
 packages:
   - "apps/*"
+
+# 설치 스크립트 실행 허용 여부 (pnpm 11+는 기본적으로 막고 명시적 결정을 요구한다).
+# create-next-app이 정한 값을 그대로 옮겨 왔다: 둘 다 빌드 없이 미리 빌드된 바이너리를 쓴다.
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
