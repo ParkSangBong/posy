@@ -1,0 +1,10 @@
+# Cargo workspace 루트. 여러 크레이트를 한 레포에서 함께 빌드·테스트한다.
+# 이 파일 자체는 패키지가 아니고([package] 없음), 멤버 목록과 공통 설정만 가진다.
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+# 멤버 크레이트들이 `edition.workspace = true`처럼 물려받는 공통 값
+[workspace.package]
+edition = "2024"
+license = "MIT"
