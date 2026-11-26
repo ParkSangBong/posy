@@ -1,0 +1,15 @@
+# Rust 빌드 결과물
+/target/
+
+# Node 의존성과 Next.js 빌드 결과물
+node_modules/
+.next/
+coverage/
+
+# 환경 변수 (비밀값). 예시 파일만 커밋한다.
+.env
+.env.*
+!.env.example
+
+# OS·에디터
+.DS_Store

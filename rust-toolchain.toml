@@ -1,0 +1,7 @@
+# 이 레포에서 쓰는 Rust 버전을 고정한다.
+# rustup이 이 파일을 읽고, 레포 안에서 cargo를 실행하면 자동으로 이 버전을 쓴다.
+# 버전을 올릴 때는 이 파일만 바꿔서 별도 커밋으로 남긴다.
+[toolchain]
+channel = "1.100.0"
+components = ["rustfmt", "clippy"]
+profile = "minimal"
