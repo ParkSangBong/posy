@@ -1,0 +1,41 @@
+# PR과 main push마다 로컬 `just check`와 같은 검사를 돌린다.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# 워크플로가 쓸 수 있는 GitHub 권한을 코드 읽기로 최소화
+permissions:
+  contents: read
+
+# 같은 브랜치에 새 push가 오면 이전 실행은 취소
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # rust-toolchain.toml에 적힌 버전(1.100.0)과 구성요소를 설치
+      - run: rustup toolchain install
+      - uses: Swatinem/rust-cache@v2
+      - uses: extractions/setup-just@v4
+      - run: just rust-check
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # package.json의 packageManager(pnpm@12.23.0)를 읽어 설치
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: extractions/setup-just@v4
+      - run: just web-check
