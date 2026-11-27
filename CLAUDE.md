@@ -1,7 +1,7 @@
 # CLAUDE.md — posy 작업 규칙
 
 꽃 선물 초보를 위한 꽃다발 미리보기 서비스. 꽃·색·송이 수·모양·크기를 고르면
-2D 미리보기와 예상 가격 범위를 보여주고, 이미지 저장과 공유 링크를 제공한다.
+사진 같은 미리보기를 보여주고, 이미지 저장과 공유 링크를 제공한다. 가격 범위는 나중 단계.
 
 상위 폴더의 CLAUDE.md(한국어 소통, 코딩 원칙)도 함께 적용된다. 이 파일은 posy에만 해당하는 규칙을 담는다.
 
@@ -9,8 +9,9 @@
 
 ```
 crates/bouquet-core   순수 Rust 도메인 로직 (유효성 검사, 가격, 레이아웃). I/O 없음
-crates/api            (Phase 4) Axum + sqlx + PostgreSQL
-crates/render         (Phase 6) 장면 → SVG → PNG
+crates/render         (Phase 4) 장면 → 밑그림 PNG (꽃 재료 이미지 합성)
+crates/api            (Phase 5) Axum + sqlx + PostgreSQL
+crates/worker         (Phase 6) AI 워커: 데스크톱에서 ComfyUI로 밑그림을 사진화
 apps/web              Next.js (App Router) + TypeScript, 모바일 우선
 docs/adr              기술 결정 기록
 docs/devlog           Phase별 회고와 학습 노트
@@ -51,5 +52,7 @@ docs/devlog           Phase별 회고와 학습 노트
 
 ## 렌더링 원칙
 
-- 백엔드가 장면 데이터(꽃별 위치·회전·크기·레이어 순서·포장지)를 계산하고, 웹(SVG)과 서버(PNG)가 같은 장면 데이터로 그린다.
-- 같은 입력 + 같은 seed → 항상 같은 결과(결정적). seed를 바꾸면 자연스러운 변형.
+- 백엔드가 장면 데이터(꽃별 위치·회전·크기·레이어 순서·포장지)를 계산하고, `render`가 꽃 재료 이미지를 합성해 밑그림 PNG를 만든다. 웹은 PNG를 보여주기만 한다. (ADR-0002)
+- 같은 입력 + 같은 seed → 항상 같은 밑그림(결정적). seed를 바꾸면 자연스러운 변형.
+- AI 사진화는 꽃 종류·색·송이 수를 반드시 유지한다. 위치는 더 예뻐지면 바뀌어도 된다.
+- AI 결과는 결정적이지 않으므로 입력 + seed + 모델·워크플로 버전과 함께 저장해서 다시 쓴다.
